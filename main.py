@@ -66,7 +66,7 @@ def analyze_tweets(keyword, total_tweets):
     final_score = round((score / float(total_tweets)),2)
     return final_score
 
-def send_the_result(bot, update):
+def send_the_result(update: Update, context: CallbackContext):
     keyword = update.message.text
     final_score = analyze_tweets(keyword, 50)
     if final_score <= -0.25:
@@ -75,17 +75,18 @@ def send_the_result(bot, update):
         status = 'NEUTRAL | 🔶'
     else:
         status = 'POSITIVE | ✅'
-    bot.send_message(chat_id=update.message.chat_id,
-                     text='Average score for '
-                           + str(keyword) 
-                           + ' is ' 
-                           + str(final_score) 
-                           + ' | ' + status)
+    context.bot.send_message(chat_id=update.message.chat_id,
+                             text='Average score for '
+                                  + str(keyword)
+                                  + ' is '
+                                  + str(final_score)
+                                  + ' | ' + status)
+
 
 def main():
-    updater = Updater('YOUR_TOKEN', use_context=True)
-    dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text, send_the_result))
+    updater = Updater('Your Token', use_context=True)
+    dispatcher = updater.dispatcher
+    dispatcher.add_handler(MessageHandler(Filters.text, send_the_result))
     updater.start_polling()
     updater.idle()
 
